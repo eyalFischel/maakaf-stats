@@ -21,7 +21,6 @@ default_args = {
     'email_on_failure': False, # Don't email on failure
     'email_on_retry': False, # Don't email on retry
     'retries': 0, # Number of retries
-    
     'retry_delay': timedelta(minutes=5), # How long to wait before retrying
 }
 
