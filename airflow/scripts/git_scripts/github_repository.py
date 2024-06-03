@@ -40,13 +40,13 @@ class FetchRepository(GitHubEntity):
         return self.fetch_paginated_data(f"{self.base_url}/issues/comments", params)
 
     def get_stars(self) -> int:
-        return self.repo_info.get('stargazers_count', 0)
+        return self.repo_info.get('stargazers_count')
 
     def get_forks(self) -> int:
-        return self.repo_info.get('forks_count', 0)
+        return self.repo_info.get('forks_count')
 
     def get_watchers(self) -> int:
-        return self.repo_info.get('subscribers_count', 0)
+        return self.repo_info.get('subscribers_count')
 
     def update_commit(self,items, user_activity) -> None:
         for commit in items:
@@ -96,4 +96,4 @@ repository1 = Repository(owner='eyalFischel', name='maakaf-stats')
 
 repo1 = FetchRepository(repository1, github_token)
 
-print(repo1.fetch_user_activity())
+print(repo1.fetch_repository_activity())
