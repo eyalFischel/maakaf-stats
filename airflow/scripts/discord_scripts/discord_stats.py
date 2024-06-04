@@ -1,13 +1,13 @@
 import aiohttp
 import asyncio
-import configparser
+from dotenv import load_dotenv
+import os
 
-# config file
-config = configparser.ConfigParser()
-config.read('config.ini')
 
-BOT_TOKEN = config['discord']['BOT_TOKEN']
-GUILD_ID = config['discord']['GUILD_ID']
+load_dotenv()
+
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+GUILD_ID = os.getenv('GUILD_ID')
 discord_url = 'https://discord.com/api'
 headers = {
     'Authorization': f'Bot {BOT_TOKEN}'
@@ -85,6 +85,7 @@ async def main():
         members = sort_members(members)
         channels = await get_guild_channels(session)
         channels = filter_channels(channels)
+        print(channels)
         
 
 # Run the script
