@@ -46,7 +46,7 @@ class DiscordBot(discord.Client):
         await client.wait_until_ready()
         while not client.is_closed():
             now = datetime.now()
-            days_until_next_sunday = (6 - now.weekday()) if now.weekday() != 6 else 0
+            days_until_next_sunday = (6 - now.weekday()) if now.weekday() != 6 else 7
             next_reset = now + timedelta(days=days_until_next_sunday)
             next_reset = next_reset.replace(hour=0, minute=0, second=0, microsecond=0)
             wait_time = (next_reset - now).total_seconds()
@@ -57,7 +57,7 @@ class DiscordBot(discord.Client):
             self.join_count
             self.join_count = 0
 
-            print("Weekly counter reset " + datetime.now())
+            print("Weekly counter reset " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             await asyncio.sleep(7*24*60*60)
 
 if __name__ == "__main__":
