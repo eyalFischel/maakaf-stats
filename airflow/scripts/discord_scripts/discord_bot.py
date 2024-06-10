@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 class DiscordBot(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -61,7 +62,6 @@ class DiscordBot(discord.Client):
             await asyncio.sleep(7*24*60*60)
 
 if __name__ == "__main__":
-    BOT_TOKEN = os.getenv('BOT_TOKEN')
     intents = discord.Intents.default()
     intents.members = True
     client = DiscordBot(intents=intents)
