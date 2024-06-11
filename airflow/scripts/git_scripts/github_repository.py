@@ -1,18 +1,11 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
-import os
 from typing import Any, Dict, List
 
-from dotenv import load_dotenv
-
 from github_entity import GitHubEntity
-from repository import Repository
 
 
-load_dotenv()
-github_token = os.getenv('GITHUB_TOKEN')
-
-class FetchRepository(GitHubEntity):
+class RepositoryFetcher(GitHubEntity):
     def __init__(self, repository, token):
         super().__init__(token)
         self.owner = repository.owner
@@ -59,7 +52,7 @@ class FetchRepository(GitHubEntity):
             user_activity[author][key] += 1
 
     def get_user_activity(self) -> Dict[str, Dict[str, int]]:
-        """Aggregate user activity across multiple repositories."""
+
         user_activity = defaultdict(lambda: {'commits': 0, 'prs': 0, 'issues': 0})
 
         commits = self.get_commits()
@@ -92,8 +85,3 @@ class FetchRepository(GitHubEntity):
             }
         return activity
 
-repository1 = Repository(owner='eyalFischel', name='maakaf-stats')
-
-repo1 = FetchRepository(repository1, github_token)
-
-print(repo1.fetch_repository_activity())
