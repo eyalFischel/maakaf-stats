@@ -8,5 +8,5 @@ class User(Base):
     username = Column(String, primary_key=True)
     roles = Column(ARRAY(String), nullable=False)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'username: {self.username} roles: {self.roles}'
