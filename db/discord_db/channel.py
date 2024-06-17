@@ -1,12 +1,13 @@
-from base import Base
+from db.discord_db.db import Base
 
-from sqlalchemy import Column, String
+from sqlalchemy import String
+from sqlalchemy.orm import mapped_column
 
 class Channel(Base):
-    __tablename__ = 'channels'
+    __tablename__: str = 'channels'
 
-    channel_id = Column(String, primary_key=True)
-    name = Column(String, nullable=False)
+    channel_id = mapped_column(String, primary_key=True)
+    name = mapped_column(String, nullable=False)
 
     def __repr__(self) -> str:
         return f'channel_id: {self.channel_id} name: {self.name}'

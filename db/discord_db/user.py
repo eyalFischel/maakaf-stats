@@ -1,12 +1,13 @@
-from base import Base
+from db.discord_db.db import Base
 
-from sqlalchemy import Column, String, ARRAY
+from sqlalchemy import String, ARRAY
+from sqlalchemy.orm import mapped_column
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__: str = 'users'
 
-    username = Column(String, primary_key=True)
-    roles = Column(ARRAY(String), nullable=False)
+    username = mapped_column(String, primary_key=True)
+    roles = mapped_column(ARRAY(String), nullable=False)
 
     def __repr__(self) -> str:
         return f'username: {self.username} roles: {self.roles}'
