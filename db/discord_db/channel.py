@@ -1,4 +1,4 @@
-from db.discord_db.db import Base
+from base import Base
 
 from sqlalchemy import String
 from sqlalchemy.orm import mapped_column
