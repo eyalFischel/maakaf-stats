@@ -15,11 +15,11 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 class DiscordBot(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.join_count = 0
+        self.join_count: int = 0
         # key: channel_name, value: [message_count, last_message_time] 
-        self.project_activity = {}
+        self.project_activity: dict[str,list] = {}
         # key: member_name, value: {key: channel_name, val: [message_count, last_message_time]}
-        self.member_activity = {}
+        self.member_activity: dict[str,dict[str,list]] = {}
 
 
     async def on_ready(self) -> None:
@@ -38,7 +38,6 @@ class DiscordBot(discord.Client):
 
 
     async def on_member_join(self, member: discord.member) -> None:
-        self.join_count
         self.join_count += 1
         print(member.name + " joined. " + f"{self.join_count} new members has joined this week")
 
@@ -55,7 +54,6 @@ class DiscordBot(discord.Client):
             print(f"next counters reset: {next_reset}")
             await asyncio.sleep(wait_time)
 
-            self.join_count
             self.join_count = 0
 
             print("Weekly counter reset " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

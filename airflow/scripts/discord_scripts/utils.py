@@ -6,7 +6,7 @@ def is_projects_category(category: discord.CategoryChannel) -> bool:
 def is_text_channel(channel: discord.channel) -> bool:
     return channel.type.value == 0
 
-def update_member_activity(message: discord.message, member_activity: dict) -> None:
+def update_member_activity(message: discord.message, member_activity: dict[str,dict[str,list]]) -> None:
     author = message.author
     channel = message.channel
 
@@ -20,8 +20,8 @@ def update_member_activity(message: discord.message, member_activity: dict) -> N
     member_activity[author.name][channel.name][1] = message.created_at.strftime('%Y-%m-%d %H:%M:%S')
     print(f'member activity: {member_activity}')
 
-def update_project_activity(message: discord.message, project_activity: dict) -> None:
-    channel_name = message.channel.name
+def update_project_activity(message: discord.message, project_activity: dict[str,list]) -> None:
+    channel_name: str = message.channel.name
     created_at = message.created_at
 
     if channel_name not in project_activity:
