@@ -1,5 +1,3 @@
-from utils import *
-
 import asyncio
 from datetime import datetime, timedelta
 import os
@@ -7,6 +5,7 @@ import os
 import discord
 from dotenv import load_dotenv
 
+from utils import *
 
 load_dotenv()
 
