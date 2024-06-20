@@ -1,2 +1,2 @@
-airflow/scripts/discord_scripts/.env
+discord_bot/.env
 __pycache__
