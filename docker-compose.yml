@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  discord_db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    env_file:
+      - ./db/discord_db/.env
