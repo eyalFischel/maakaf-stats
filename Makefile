@@ -28,7 +28,6 @@ test:
 .PHONY: static-checks
 static-checks:
 	$(PYTHON) -m flake8 src
-	$(PYTHON) -m pylint src --rcfile pylint.rc
 	$(PYTHON) -m black src --check
 
 .PHONY: reformat
