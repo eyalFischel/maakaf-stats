@@ -27,12 +27,13 @@ test:
 
 .PHONY: static-checks
 static-checks:
-	$(PYTHON) -m flake8 src
-	$(PYTHON) -m black src --check
+	$(PYTHON) -m flake8 .
+	$(PYTHON) -m pylint .
+	$(PYTHON) -m black --check .
 
 .PHONY: reformat
 reformat:
-	$(PYTHON) -m black src
+	$(PYTHON) -m black .
 
 .PHONY: clean
 clean:
