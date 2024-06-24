@@ -1,4 +1,5 @@
 """configure and create the database"""
+
 import os
 
 from dotenv import load_dotenv
