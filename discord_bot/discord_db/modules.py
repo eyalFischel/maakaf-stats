@@ -14,7 +14,7 @@ class User(Base):
     # roles = mapped_column(ARRAY(String), nullable=False)
 
     def __repr__(self) -> str:
-        return f'username: {self.username} roles: {self.roles}'
+        return f'username: {self.username} joined_at: {self.joined_at}'
     
 
 class Channel(Base):
