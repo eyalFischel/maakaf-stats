@@ -26,6 +26,12 @@ class DiscordBot(discord.Client):
     async def on_ready(self) -> None:
         print(f"We have logged in as {client.user}")
 
+        with Session() as session:
+            for channel in client.guilds[0].text_channels:
+                insert_channel(session, str(channel.id), channel.name)
+            for user in client.guilds[0].members:
+                insert_user(session, user.name, user.joined_at)
+
         # asyncio.create_task(self.reset_counters_weekly())
 
 
@@ -34,7 +40,7 @@ class DiscordBot(discord.Client):
             return
         
         with Session() as session:
-            insert_message(session, message.id, message.channel.id, message.author.name, message.created_at)
+            insert_message(session, str(message.id), str(message.channel.id), message.author.name, message.created_at)
         # update_member_activity(message, self.member_activity)
         # if message.channel.category and is_projects_category(message.channel.category):
         #     update_project_activity(message, self.project_activity)
@@ -42,7 +48,7 @@ class DiscordBot(discord.Client):
 
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
             with Session() as session:
-                insert_channel(session, channel.id, channel.name)
+                insert_channel(session, str(channel.id), channel.name)
 
 
     async def on_member_join(self, member: discord.member) -> None:
