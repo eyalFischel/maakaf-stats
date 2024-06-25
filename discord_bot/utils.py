@@ -22,7 +22,11 @@ def insert_user(session, username: str, joined_at: datetime) -> None:
 def insert_channel(session, channel_id: str, name: str) -> None:
     """inserts a channel to the db"""
     stmt = select(Channel).where(Channel.channel_id == channel_id)
-    if session.scalars(stmt).first():
+    channel = session.scalars(stmt).first()
+    if channel:
+        if channel.name != name:
+            channel.name = name
+            session.commit()
         return
 
     channel = Channel(channel_id=channel_id, name=name)
@@ -34,6 +38,10 @@ def insert_message(
     session, message_id: str, channel_id: str, username: str, created_at: datetime
 ) -> None:
     """inserts a message to the db"""
+    stmt = select(Message).where(Message.message_id == message_id)
+    if session.scalars(stmt).first():
+        return
+
     message = Message(
         message_id=message_id,
         channel_id=channel_id,
@@ -41,4 +49,12 @@ def insert_message(
         created_at=created_at,
     )
     session.add(message)
+    session.commit()
+
+
+def update_channel(session, channel_id: str, name: str) -> None:
+    """update a channel in the db"""
+    stmt = select(Channel).where(Channel.channel_id == channel_id)
+    channel = session.scalars(stmt).first()
+    channel.name = name
     session.commit()
