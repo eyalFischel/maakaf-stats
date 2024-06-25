@@ -42,7 +42,7 @@ class Message(Base):
     channel_id = mapped_column(
         String, ForeignKey("channels.channel_id"), nullable=False
     )
-    username = mapped_column(String, ForeignKey("users.username"), nullable=False)
+    username = mapped_column(String, nullable=False)
     created_at = mapped_column(DateTime, nullable=False)
 
     def __repr__(self) -> str:
