@@ -4,8 +4,9 @@ from sqlalchemy.orm import relationship, mapped_column
 
 Base = declarative_base()
 
+
 class GitHubUserORM(Base):
-    __tablename__ = 'githubuser'
+    __tablename__ = "githubuser"
 
     user_id = mapped_column(Integer, primary_key=True, index=True)
     username = mapped_column(String(39), unique=True)
@@ -15,7 +16,7 @@ class GitHubUserORM(Base):
 
 
 class RepositoryORM(Base):
-    __tablename__ = 'repository'
+    __tablename__ = "repository"
 
     repoid = mapped_column(Integer, primary_key=True, index=True)
     name = mapped_column(String(255))
@@ -28,7 +29,7 @@ class RepositoryORM(Base):
     watchers = mapped_column(Integer)
     views = mapped_column(Integer)
     activeusers = mapped_column(Integer)
-    userid = mapped_column(Integer, ForeignKey('githubuser.user_id'))
+    userid = mapped_column(Integer, ForeignKey("githubuser.user_id"))
     fetched_at = mapped_column(DateTime, index=True)
 
     user = relationship("GitHubUserORM", back_populates="repositories")
