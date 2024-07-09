@@ -4,6 +4,11 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
+    volumes:
+      - discord_db_data:/var/lib/postgresql/data
     restart: on-failure
     env_file:
       - ./discord_bot/discord_db/.env
+  
+volumes:
+  discord_db_data:
