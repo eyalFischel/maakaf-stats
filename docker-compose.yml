@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   discord_db:
-    image: postgres:latest
+    image: postgres:16.3
     ports:
       - "5432:5432"
     volumes:
