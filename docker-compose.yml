@@ -7,3 +7,15 @@ services:
     restart: on-failure
     env_file:
       - ./discord_bot/discord_db/.env
+  
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - .env
+
+volumes:
+  grafana_data:
