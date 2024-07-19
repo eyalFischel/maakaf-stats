@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  github_db:
+    image: postgres:16.3
+    ports:
+      - "5433:5432"
+    volumes:
+      - github_db_data:/var/lib/postgresql/data
+    restart: on-failure
+    env_file:
+      - ./airflow/scripts/git_scripts/.env
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ./airflow/scripts/git_scripts/.env
+    ports:
+      - "8080:80"
+    depends_on:
+      - github_db
+
+volumes:
+  github_db_data:
