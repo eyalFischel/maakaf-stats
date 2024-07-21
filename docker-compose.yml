@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   discord_db:
+    container_name: discord_db_c
     image: postgres:16.3
     ports:
       - "5432:5432"
@@ -8,7 +9,7 @@ services:
       - discord_db_data:/var/lib/postgresql/data
     restart: on-failure
     env_file:
-      - ./discord_bot/discord_db/.env
+      - ./.env
   
 volumes:
   discord_db_data:
