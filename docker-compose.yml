@@ -11,5 +11,11 @@ services:
     env_file:
       - ./.env
   
+  discord_bot:
+    build: ./discord_bot
+    container_name: discord_bot_c
+    env_file:
+      - ./.env
+  
 volumes:
   discord_db_data:
