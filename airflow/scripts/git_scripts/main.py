@@ -1,18 +1,16 @@
-import os
+from database import init_db
+from repository_store_data import collect_repository_data, insert_repository_data
 
-from dotenv import load_dotenv
-
-from github_repository import RepositoryFetcher
-from repository import Repository
-
-
-load_dotenv()
-github_token = os.getenv('GITHUB_TOKEN')
 
 def main():
-    repository1 = Repository(owner='eyalFischel', name='maakaf-stats')
-    repo1 = RepositoryFetcher(repository1, github_token)
-    print(repo1.fetch_repository_activity())
+    # Initialize the database
+    init_db()
+
+    # Collect repository data
+    repo_data = collect_repository_data()
+
+    # Insert the collected data into the database
+    insert_repository_data(repo_data)
 
 
 main()
