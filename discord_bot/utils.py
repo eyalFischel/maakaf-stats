@@ -2,10 +2,8 @@
 
 from datetime import datetime
 
+from discord_db.modules import Channel, Message, User
 from sqlalchemy import select
-
-
-from discord_db.modules import User, Channel, Message
 
 
 def insert_user(session, username: str, joined_at: datetime) -> None:

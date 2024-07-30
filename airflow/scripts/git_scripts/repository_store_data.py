@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import Generator
 
 from dotenv import load_dotenv
 
@@ -7,23 +8,34 @@ from database import SessionLocal
 from github_repository import RepositoryFetcher
 from repository import Repository
 from sql_modules import RepositoryORM, GitHubUserORM
+from sqlalchemy.exc import SQLAlchemyError
 
 
 load_dotenv()
 github_token = os.getenv("GITHUB_TOKEN")
 
 
+def get_repositories(session: any) -> Generator:
+    try:
+        yield (
+            session.query(RepositoryORM.userid, RepositoryORM.name)
+            .distinct(RepositoryORM.userid, RepositoryORM.name)
+            .all()
+        )
+    except SQLAlchemyError as error:
+        print(f"An error occurred: {error}")
+        session.close()
+    finally:
+        session.close()
+
+
 def collect_repository_data() -> list:
     """Gets the repositories from the DB and return their stats using the git api"""
     session = SessionLocal()
+    repositories = get_repositories(session)
 
-    # Fetch all repositories from the database
-    repositories = (
-        session.query(RepositoryORM.userid, RepositoryORM.name)
-        .distinct(RepositoryORM.userid, RepositoryORM.name)
-        .all()
-    )
-
+    if not repositories:
+        return []
     repo_data = []
 
     for repo in repositories:
@@ -49,8 +61,6 @@ def collect_repository_data() -> list:
                     "activity": activity,
                 }
             )
-
-    session.close()
 
     for data in repo_data:
         print(f"Activity for {data['owner']}/{data['name']}: {data['activity']}")

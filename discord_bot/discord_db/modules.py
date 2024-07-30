@@ -1,8 +1,7 @@
 """db table modules"""
 
-from sqlalchemy import String, DateTime, ForeignKey
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import mapped_column
+from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy.orm import DeclarativeBase, mapped_column
 
 
 class Base(DeclarativeBase):
