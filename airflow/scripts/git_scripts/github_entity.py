@@ -16,13 +16,17 @@ class GitHubEntity:
         }
         self.timeout = 10
 
-    def fetch_paginated_data(self, path: str, params: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def fetch_paginated_data(
+        self, path: str, params: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """Fetch data from GitHub API with pagination and error handling."""
         results = []
         url = path
         while url:
             try:
-                response = requests.get(url, headers=self.headers, params=params, timeout=self.timeout)
+                response = requests.get(
+                    url, headers=self.headers, params=params, timeout=self.timeout
+                )
                 response.raise_for_status()
                 data = response.json()
                 results.extend(data)
@@ -48,7 +52,9 @@ class GitHubEntity:
     ) -> Dict[str, Any]:
 
         try:
-            response = requests.get(path, headers=self.headers, params=params, timeout=self.timeout)
+            response = requests.get(
+                path, headers=self.headers, params=params, timeout=self.timeout
+            )
             response.raise_for_status()
             return response.json()
 

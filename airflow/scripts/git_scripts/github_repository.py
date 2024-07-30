@@ -78,8 +78,12 @@ class RepositoryFetcher(GitHubEntity):
         return views
 
     def fetch_repository_activity(self) -> Dict[str, int]:
-        activity = {'commits': len(self.get_commits()), 'prs': len(self.get_pull_requests()),
-                    'issues': len(self.get_issues()), 'comments': len(self.get_comments())}
+        activity = {
+            "commits": len(self.get_commits()),
+            "prs": len(self.get_pull_requests()),
+            "issues": len(self.get_issues()),
+            "comments": len(self.get_comments()),
+        }
         return activity
 
     def fetch_user_activity(self) -> Dict[str, Dict[str, int]]:
