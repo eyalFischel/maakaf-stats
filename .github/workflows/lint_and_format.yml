@@ -24,7 +24,7 @@ jobs:
       run: black .
 
     - name: Run Flake8
-      run: flake8 .
+      run: flake8 ./ 
 
     - name: Run Pylint
-      run: pylint .
+      run: pylint ./ --recursive=true
