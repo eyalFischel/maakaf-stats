@@ -62,4 +62,4 @@ class GitHubEntity:
             logging.error(f"Timeout error occurred: {timeout_err}")
         except requests.exceptions.RequestException as req_err:
             logging.error(f"An error occurred: {req_err}")
-
+        return {}

@@ -9,7 +9,8 @@ CODE_DIR = ./
 help:
 	@echo "Please use 'make <target>' where <target> is one of"
 	@echo ""
-	@echo "  install-deps   Install depedencies"
+	@echo "  install-airflow   Install depedencies of airflow"
+	@echo "  install-discord   Install depedencies of discord bot"
 	@echo "  test           Run tests"
 	@echo "  static-checks  Run static checks"
 	@echo "  reformat       Reformat code"
@@ -20,9 +21,13 @@ help:
 .venv:
 	python3 -m venv .venv
 
-.PHONY: install-deps
-install-deps: .venv
-	$(PIP) install -r $(REQUIREMENTS_PATH_DISCORD) && $(PIP) install -r $(REQUIREMENTS_PATH_AIRFLOW)
+.PHONY: install-airflow
+install-airflow: .venv
+	$(PIP) install -r $(REQUIREMENTS_PATH_AIRFLOW)
+
+.PHONY: install-discord
+install-discord: .venv
+	$(PIP) install -r $(REQUIREMENTS_PATH_DISCORD)
 
 .PHONY: test
 test:
