@@ -83,9 +83,6 @@ class RepositoryFetcher(GitHubEntity):
             "prs": len(self.get_pull_requests()),
             "issues": len(self.get_issues()),
             "comments": len(self.get_comments()),
-            "forks": self.get_forks(),
-            "stars": self.get_stars(),
-            "watchers": self.get_watchers(),
         }
         return activity
 

@@ -1,7 +1,8 @@
 from database import init_db
+import os
+
 from logging_config import logger
 from repository_store_data import collect_repository_data, insert_repository_data
-
 
 def main():
     try:
@@ -15,7 +16,6 @@ def main():
         insert_repository_data(repo_data)
     except Exception as e:
         logger.error(f"An error occurred: {e}", exc_info=True)
-
 
 if __name__ == "__main__":
     main()
