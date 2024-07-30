@@ -1,7 +1,9 @@
 VENV_BIN = .venv/bin
 PYTHON = $(VENV_BIN)/python3
 PIP = $(VENV_BIN)/pip
-REQUIREMENTS_PATH = requirements.txt
+REQUIREMENTS_PATH_DISCORD = discord_bot/requirements.txt
+REQUIREMENTS_PATH_AIRFLOW = airflow/scripts/git_scripts/requirements.txt
+CODE_DIR = ./
 
 .PHONY: help
 help:
@@ -14,12 +16,13 @@ help:
 	@echo "  clean          Clean up all generated files"
 	@echo ""
 
+.PHONY: .venv
 .venv:
 	python3 -m venv .venv
 
 .PHONY: install-deps
 install-deps: .venv
-	$(PIP) install -r $(REQUIREMENTS_PATH)
+	$(PIP) install -r $(REQUIREMENTS_PATH_DISCORD) && $(PIP) install -r $(REQUIREMENTS_PATH_AIRFLOW)
 
 .PHONY: test
 test:
@@ -27,13 +30,16 @@ test:
 
 .PHONY: static-checks
 static-checks:
-	$(PYTHON) -m flake8 .
-	$(PYTHON) -m pylint .
-	$(PYTHON) -m black --check .
+	$(PYTHON) -m flake8 $(CODE_DIR)
+	$(PYTHON) -m pylint $(CODE_DIR) --recursive=true
+	$(PYTHON) -m black --check --exclude .venv .
 
 .PHONY: reformat
 reformat:
-	$(PYTHON) -m black .
+	$(PYTHON) -m black --exclude .venv .
+	$(PYTHON) -m isort --skip .venv .
+	$(PYTHON) -m autoflake --in-place --remove-all-unused-imports --recursive --exclude .venv .
+
 
 .PHONY: clean
 clean:
