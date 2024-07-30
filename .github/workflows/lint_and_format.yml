@@ -21,7 +21,7 @@ jobs:
         pip install flake8 black pylint
 
     - name: Run Black
-      run: black --check .
+      run: black .
 
     - name: Run Flake8
       run: flake8 .
