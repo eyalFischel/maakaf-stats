@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 import requests
 
@@ -9,12 +9,12 @@ logging.basicConfig(
 
 
 class GitHubEntity:
-
     def __init__(self, token: str):
         self.headers = {
             "Authorization": f"token {token}",
             "Accept": "application/vnd.github.v3+json",
         }
+        self.timeout = 10
 
     def fetch_paginated_data(
         self, path: str, params: Dict[str, Any]
@@ -24,7 +24,9 @@ class GitHubEntity:
         url = path
         while url:
             try:
-                response = requests.get(url, headers=self.headers, params=params)
+                response = requests.get(
+                    url, headers=self.headers, params=params, timeout=self.timeout
+                )
                 response.raise_for_status()
                 data = response.json()
                 results.extend(data)
@@ -50,7 +52,9 @@ class GitHubEntity:
     ) -> Dict[str, Any]:
 
         try:
-            response = requests.get(path, headers=self.headers, params=params)
+            response = requests.get(
+                path, headers=self.headers, params=params, timeout=self.timeout
+            )
             response.raise_for_status()
             return response.json()
 
@@ -64,3 +68,4 @@ class GitHubEntity:
             logging.error(f"Timeout error occurred: {timeout_err}")
         except requests.exceptions.RequestException as req_err:
             logging.error(f"An error occurred: {req_err}")
+        return {}
