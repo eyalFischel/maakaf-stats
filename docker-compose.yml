@@ -10,6 +10,15 @@ services:
     env_file:
       - ./.env
   
+  grafana:
+    image: grafana/grafana:11.1.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - .env
+  
   discord_bot:
     build: ./discord_bot
     container_name: discord_bot_c
@@ -76,6 +85,7 @@ services:
 
 volumes:
   postgres_data:
+  grafana_data:
   esdata:
 
 networks:
