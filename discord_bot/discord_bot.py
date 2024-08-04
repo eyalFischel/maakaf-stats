@@ -3,10 +3,9 @@
 import os
 
 import discord
-from dotenv import load_dotenv
-
 from discord_db.db import Session
-from utils import insert_user, insert_channel, insert_message, update_channel
+from dotenv import load_dotenv
+from utils import insert_channel, insert_message, insert_user, update_channel
 
 load_dotenv()
 

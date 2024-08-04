@@ -1,12 +1,11 @@
-version: "3.8"
+
 services:
-  discord_db:
-    container_name: discord_db_c
+  postgres:
     image: postgres:16.3
     ports:
       - "5432:5432"
     volumes:
-      - discord_db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     restart: on-failure
     env_file:
       - ./.env
@@ -16,6 +15,73 @@ services:
     container_name: discord_bot_c
     env_file:
       - ./.env
-  
+    networks:
+      elasticnetwork:
+        ipv4_address: 172.21.1.5
+
+  git_scripts:
+    build:
+      context: ./airflow/scripts/git_scripts
+    env_file:
+      - ./airflow/scripts/git_scripts/.env
+    depends_on:
+      - github_db
+      - logstash
+    volumes:
+      - ./airflow/scripts/git_scripts:/app/git_scripts
+    networks:
+      elasticnetwork:
+        ipv4_address: 172.21.1.4
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      elasticnetwork:
+        ipv4_address: 172.21.1.3
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    volumes:
+      - ./airflow/scripts/git_scripts:/app/git_scripts
+      - ./elastic/logstash-config:/usr/share/logstash/config
+      - ./elastic/logstash-pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    networks:
+      elasticnetwork:
+        ipv4_address: 172.21.1.2
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    environment:
+        ELASTICSEARCH_URL: http://172.21.1.3:9200
+        SERVER_HOST: 0.0.0.0
+        XPACK_REPORTING_KIBANASERVER_HOSTNAME: 0.0.0.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      elasticnetwork:
+        ipv4_address: 172.21.1.1
+
 volumes:
-  discord_db_data:
+  postgres_data:
+  esdata:
+
+networks:
+  elasticnetwork: # here we set the network name
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet:  172.21.0.0/16
