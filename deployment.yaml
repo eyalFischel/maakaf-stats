@@ -123,3 +123,37 @@ spec:
       #   - name: grafana-data
       #     persistentVolumeClaim:
       #       claimName: grafana-pvc
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot-deployment
+  labels:
+    app: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      containers:
+      - name: discord-bot
+        image: discord_bot_image:1.0
+        envFrom:
+        - configMapRef:
+            name: env-config
+        # - secretRef:
+        #     name: env-secret
+      #   volumeMounts:
+      #   - mountPath: /var/lib/postgresql/data
+      #     name: postgres-data
+      # volumes:
+      #   - name: postgres-data
+      #     persistentVolumeClaim:
+      #       claimName: postgres-pvc
