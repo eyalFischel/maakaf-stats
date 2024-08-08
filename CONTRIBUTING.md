@@ -90,6 +90,6 @@ We welcome your pull requests! If you are new to making pull requests, check out
 
 - Please make sure to update tests as appropriate.
 - Check that your changes do not break existing functionality.
-- Please use the Makefile to follow our style guidelinesץ
+- Please use the Makefile to follow our style guidelines.
 
 Thank you for contributing, happy coding!
