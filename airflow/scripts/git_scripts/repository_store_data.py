@@ -16,7 +16,7 @@ github_token = os.getenv("GITHUB_TOKEN")
 
 def load_repositories_from_json(json_file: str) -> list:
     logger.info(f"Loading repositories from {json_file}")
-    with open(json_file, 'r') as file:
+    with open(json_file, "r") as file:
         repositories = json.load(file)
     logger.debug(f"Loaded repositories: {repositories}")
     return repositories
@@ -25,15 +25,13 @@ def load_repositories_from_json(json_file: str) -> list:
 def collect_repository_data() -> list:
     """Gets the repositories from the DB and return their stats using the git api"""
     logger.info("Starting to collect repository data.")
-    repositories = load_repositories_from_json('maakaf_repos.json')
+    repositories = load_repositories_from_json("maakaf_repos.json")
     repo_data = []
 
     for repo in repositories:
         try:
             # Initialize RepositoryFetcher with owner and repo name
-            repository = Repository(
-                owner=repo["owner"], name=repo["name"]
-            )
+            repository = Repository(owner=repo["owner"], name=repo["name"])
             repo_fetcher = RepositoryFetcher(repository, github_token)
 
             # Fetch repository activity
@@ -47,7 +45,9 @@ def collect_repository_data() -> list:
             )
             logger.info(f"Successfully fetched data for {repo['owner']}/{repo['name']}")
         except Exception as e:
-            logger.error(f"Failed to fetch data for {repo['owner']}/{repo['name']}: {e}")
+            logger.error(
+                f"Failed to fetch data for {repo['owner']}/{repo['name']}: {e}"
+            )
 
     for data in repo_data:
         logger.info(f"Activity for {data['owner']}/{data['name']}: {data['activity']}")
