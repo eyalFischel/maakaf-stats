@@ -1,5 +1,4 @@
 from database import init_db
-import os
 
 from logging_config import logger
 from repository_store_data import collect_repository_data, insert_repository_data
