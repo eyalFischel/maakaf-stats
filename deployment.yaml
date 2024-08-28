@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16.3
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - configMapRef:
+            name: env-config
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+spec:
+  selector:
+    app: grafana
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:11.1.0
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: env-config
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot-deployment
+  labels:
+    app: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      containers:
+      - name: discord-bot
+        image: x.x.x.x:5000/discord_bot_image  # change x.x.x.x to the host ip
+        envFrom:
+        - configMapRef:
+            name: env-config

@@ -1,14 +1,29 @@
 
 services:
-  github_db:
+  postgres:
     image: postgres:16.3
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
-      - github_db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     restart: on-failure
     env_file:
-      - ./airflow/scripts/git_scripts/.env
+      - ./.env
+  
+  grafana:
+    image: grafana/grafana:11.1.0
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - .env
+  
+  discord_bot:
+    build: ./discord_bot
+    container_name: discord_bot_c
+    env_file:
+      - ./.env
     networks:
       elasticnetwork:
         ipv4_address: 172.21.1.5
@@ -69,7 +84,8 @@ services:
         ipv4_address: 172.21.1.1
 
 volumes:
-  github_db_data:
+  postgres_data:
+  grafana_data:
   esdata:
 
 networks:

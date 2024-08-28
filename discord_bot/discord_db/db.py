@@ -10,7 +10,7 @@ from .modules import Base
 
 load_dotenv()
 
-DB_URL: str = os.getenv("PG_DATABASE_URL")
+DB_URL: str = os.getenv("DB_URL")
 
 engine = create_engine(DB_URL)
 
