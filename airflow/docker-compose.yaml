@@ -12,7 +12,7 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-python-dotenv sqlalchemy>=1.0.4}
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
@@ -38,6 +38,16 @@ services:
       interval: 5s
       retries: 5
     restart: always
+
+  github_db:
+    image: postgres:16.3
+    ports:
+      - "5433:5432"
+    volumes:
+      - github_db_data:/var/lib/postgresql/data
+    restart: on-failure
+    env_file:
+      - ./dags/scripts/git_scripts/.env
 
   airflow-webserver:
     <<: *airflow-common
@@ -173,3 +183,4 @@ services:
 
 volumes:
   postgres-db-volume:
+  github_db_data:
