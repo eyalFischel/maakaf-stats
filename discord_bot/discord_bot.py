@@ -3,8 +3,9 @@
 import os
 
 import discord
-from discord_db.db import Session
 from dotenv import load_dotenv
+
+from discord_db.db import Session
 from utils import insert_channel, insert_message, insert_user, update_channel
 
 load_dotenv()
@@ -20,12 +21,12 @@ class DiscordBot(discord.Client):
         called when the bot starts running,
         scans the db and updates the data
         """
-        print(f"We have logged in as {client.user}")
+        print(f"We have logged in as {self.user}")
 
         with Session() as session:
-            for user in client.guilds[0].members:
+            for user in self.guilds[0].members:
                 insert_user(session, user.name, user.joined_at)
-            for channel in client.guilds[0].text_channels:
+            for channel in self.guilds[0].text_channels:
                 insert_channel(session, str(channel.id), channel.name)
                 async for message in channel.history(limit=None):
                     if message.author.bot:
@@ -69,7 +70,8 @@ class DiscordBot(discord.Client):
                 update_channel(session, str(after.id), after.name)
 
 
-intents = discord.Intents.default()
-intents.members = True
-client = DiscordBot(intents=intents)
-client.run(BOT_TOKEN)
+if __name__ == "__main__":
+    intents = discord.Intents.default()
+    intents.members = True
+    client = DiscordBot(intents=intents)
+    client.run(BOT_TOKEN)
