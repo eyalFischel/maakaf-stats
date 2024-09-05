@@ -50,6 +50,13 @@ def insert_message(
     session.commit()
 
 
+def get_channel_latest_message(session, channel_id: str) -> Message:
+    """get the latest message in the db"""
+    stmt = select(Message).where(Message.channel_id == channel_id).order_by(Message.created_at.desc())
+    last_message = session.scalars(stmt).first()
+    return last_message
+
+
 def update_channel(session, channel_id: str, name: str) -> None:
     """update a channel in the db"""
     stmt = select(Channel).where(Channel.channel_id == channel_id)

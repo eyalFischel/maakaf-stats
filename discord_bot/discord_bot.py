@@ -28,7 +28,10 @@ class DiscordBot(discord.Client):
                 insert_user(session, user.name, user.joined_at)
             for channel in self.guilds[0].text_channels:
                 insert_channel(session, str(channel.id), channel.name)
-                async for message in channel.history(limit=None):
+
+                last_message_in_db = get_channel_latest_message(session, str(channel.id))
+                last_message_in_db = await channel.fetch_message(int(last_message_in_db.message_id))
+                async for message in channel.history(limit=None, after=last_message_in_db):
                     if message.author.bot:
                         continue
                     insert_message(
