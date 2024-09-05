@@ -2,8 +2,9 @@
 
 from datetime import datetime
 
-from discord_db.modules import Channel, Message, User
 from sqlalchemy import select
+
+from discord_db.modules import Channel, Message, User
 
 
 def insert_user(session, username: str, joined_at: datetime) -> None:
@@ -52,7 +53,11 @@ def insert_message(
 
 def get_channel_latest_message(session, channel_id: str) -> Message:
     """get the latest message in the db"""
-    stmt = select(Message).where(Message.channel_id == channel_id).order_by(Message.created_at.desc())
+    stmt = (
+        select(Message)
+        .where(Message.channel_id == channel_id)
+        .order_by(Message.created_at.desc())
+    )
     last_message = session.scalars(stmt).first()
     return last_message
 
