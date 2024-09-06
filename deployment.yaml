@@ -100,7 +100,7 @@ spec:
     spec:
       containers:
       - name: discord-bot
-        image: x.x.x.x:5000/discord_bot_image  # change x.x.x.x to the host ip
+        image: avev/discord-bot
         envFrom:
         - configMapRef:
             name: env-config
