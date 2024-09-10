@@ -12,7 +12,7 @@ console_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 console_handler.setFormatter(logging.Formatter(console_format))
 
 # Create a FileHandler for JSON-formatted log output
-file_handler = logging.FileHandler("test.log")
+file_handler = logging.FileHandler("github_data.log")
 file_handler.setLevel(logging.DEBUG)
 json_format = jsonlogger.JsonFormatter("%(asctime)s %(name)s %(levelname)s %(message)s")
 file_handler.setFormatter(json_format)
