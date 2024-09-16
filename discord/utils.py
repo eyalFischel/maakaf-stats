@@ -4,21 +4,35 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from discord_db.modules import Channel, Message, User
+from discord_db.modules import Guild, Channel, Message, User
 
 
-def insert_user(session, username: str, joined_at: datetime) -> None:
+def insert_user(session, username: str, guild_id: str, joined_at: datetime) -> None:
     """insers a user to the db"""
-    stmt = select(User).where(User.username == username)
+    stmt = select(User).where(User.username == username and User.guild_id == guild_id)
     if session.scalars(stmt).first():
         return
 
-    user = User(username=username, joined_at=joined_at)
+    user = User(username=username, guild_id=guild_id, joined_at=joined_at)
     session.add(user)
     session.commit()
 
+def insert_guild(session, guild_id: str, name: str):
+    """inserts a guild to the db"""
+    stmt = select(Guild).where(Guild.guild_id == guild_id)
+    guild = session.scalars(stmt).first()
+    if guild:
+        if guild.name != name:
+            guild.name = name
+            session.commit()
+        return
+    
+    guild = Guild(guild_id=guild_id, name=name)
+    session.add(guild)
+    session.commit()
 
-def insert_channel(session, channel_id: str, name: str) -> None:
+
+def insert_channel(session, channel_id: str, guild_id: str, name: str) -> None:
     """inserts a channel to the db"""
     stmt = select(Channel).where(Channel.channel_id == channel_id)
     channel = session.scalars(stmt).first()
@@ -28,13 +42,13 @@ def insert_channel(session, channel_id: str, name: str) -> None:
             session.commit()
         return
 
-    channel = Channel(channel_id=channel_id, name=name)
+    channel = Channel(channel_id=channel_id, guild_id=guild_id, name=name)
     session.add(channel)
     session.commit()
 
 
 def insert_message(
-    session, message_id: str, channel_id: str, username: str, created_at: datetime
+    session, message_id: str, channel_id: str, guild_id: str, username: str, created_at: datetime
 ) -> None:
     """inserts a message to the db"""
     stmt = select(Message).where(Message.message_id == message_id)
@@ -44,6 +58,7 @@ def insert_message(
     message = Message(
         message_id=message_id,
         channel_id=channel_id,
+        guild_id=guild_id,
         username=username,
         created_at=created_at,
     )
