@@ -14,11 +14,24 @@ class User(Base):
     __tablename__: str = "users"
 
     username = mapped_column(String, primary_key=True)
+    guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), primary_key=True)
     joined_at = mapped_column(DateTime, nullable=False)
 
     def __repr__(self) -> str:
-        return f"username: {self.username} joined_at: {self.joined_at}"
+        return f"username: {self.username} guild_id: {self.guild_id} joined_at: {self.joined_at}"
 
+
+class Guild(Base):
+    """guild table"""
+
+    __tablename__: str = "guilds"
+
+    guild_id = mapped_column(String, primary_key=True)
+    name = mapped_column(String, nullable=False)
+
+    def __repr__(self) -> str:
+        return f"guild_id: {self.guild_id} name: {self.name}"
+    
 
 class Channel(Base):
     """channel table"""
@@ -26,10 +39,11 @@ class Channel(Base):
     __tablename__: str = "channels"
 
     channel_id = mapped_column(String, primary_key=True)
+    guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), nullable=False)
     name = mapped_column(String, nullable=False)
 
     def __repr__(self) -> str:
-        return f"channel_id: {self.channel_id} name: {self.name}"
+        return f"channel_id: {self.channel_id} guild_id: {self.guild_id} name: {self.name}"
 
 
 class Message(Base):
@@ -41,6 +55,7 @@ class Message(Base):
     channel_id = mapped_column(
         String, ForeignKey("channels.channel_id"), nullable=False
     )
+    guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), nullable=False)
     username = mapped_column(String, nullable=False)
     created_at = mapped_column(DateTime, nullable=False)
 
@@ -48,6 +63,7 @@ class Message(Base):
         return f"\
         message_id: {self.message_id} \
         channel_id: {self.channel_id} \
+        guild_id: {self.guild_id} \
         username: {self.username} \
         timestamp: {self.created_at}\
         "
