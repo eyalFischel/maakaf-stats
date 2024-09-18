@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from discord_db.db import Session
 from discord_db.logger import Logger
 from utils import (
+    insert_update_guild,
     insert_update_channel,
     insert_message,
     insert_user,
@@ -32,6 +33,10 @@ class DiscordBot(discord.Client):
         with Session() as session:
             for guild in self.guilds:
                 guild_id = str(guild.id)
+                try:
+                    insert_update_guild(session, guild_id, guild.name)
+                except Exception as e:
+                    Logger.error(f"Error inserting guild {guild.name}: {e}")
 
                 for user in guild.members:
                     try:
@@ -120,6 +125,14 @@ class DiscordBot(discord.Client):
                 insert_user(session, member.name, str(member.guild.id), member.joined_at)
             except Exception as e:
                 Logger.error(f"Error inserting user {member.name} from guild {member.guild.id}: {e}")
+    
+    async def on_guild_join(self, guild) -> None:
+        """adds the new joined guild to the db"""
+        with Session as session:
+            try:
+                insert_update_guild(session, str(guild.id), guild.name)
+            except:
+                Logger.error(f"Error inserting guild {guild.name}: {e}")
 
     async def on_guild_channel_update(self, before, after) -> None:
         """updates the channel changes in the db"""
@@ -129,6 +142,15 @@ class DiscordBot(discord.Client):
                     insert_update_channel(session, str(after.id), after.guild.id, after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of channel {before.name}: {e}")
+    
+    async def on_guild_update(self, before, after) -> None:
+        """updates the guild changes in the db"""
+        if before.name != after.name:
+            with Session() as session:
+                try:
+                    insert_update_guild(session, str(after.id), after.name)
+                except Exception as e:
+                    Logger.error(f"Error updating name of guild {before.name}: {e}")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ def insert_user(session, username: str, guild_id: str, joined_at: datetime) -> N
     session.add(user)
     session.commit()
 
-def insert_guild(session, guild_id: str, name: str):
+def insert_update_guild(session, guild_id: str, name: str):
     """inserts a guild to the db"""
     stmt = select(Guild).where(Guild.guild_id == guild_id)
     guild = session.scalars(stmt).first()
