@@ -32,7 +32,7 @@ def insert_guild(session, guild_id: str, name: str):
     session.commit()
 
 
-def insert_channel(session, channel_id: str, guild_id: str, name: str) -> None:
+def insert_update_channel(session, channel_id: str, guild_id: str, name: str) -> None:
     """inserts a channel to the db"""
     stmt = select(Channel).where(Channel.channel_id == channel_id)
     channel = session.scalars(stmt).first()
@@ -75,11 +75,3 @@ def get_channel_latest_message(session, channel_id: str) -> Message:
     )
     last_message = session.scalars(stmt).first()
     return last_message
-
-
-def update_channel(session, channel_id: str, name: str) -> None:
-    """update a channel in the db"""
-    stmt = select(Channel).where(Channel.channel_id == channel_id)
-    channel = session.scalars(stmt).first()
-    channel.name = name
-    session.commit()

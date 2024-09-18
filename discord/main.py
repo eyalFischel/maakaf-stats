@@ -8,10 +8,9 @@ from dotenv import load_dotenv
 from discord_db.db import Session
 from discord_db.logger import Logger
 from utils import (
-    insert_channel,
+    insert_update_channel,
     insert_message,
     insert_user,
-    update_channel,
     get_channel_latest_message,
 )
 
@@ -43,7 +42,7 @@ class DiscordBot(discord.Client):
                 for channel in guild.text_channels:
                     channel_id = str(channel.id)
                     try:
-                        insert_channel(session, channel_id, guild_id, channel.name)
+                        insert_update_channel(session, channel_id, guild_id, channel.name)
                     except Exception as e:
                         Logger.error(f"Error inserting channel {channel.name}: {e}")
 
@@ -110,7 +109,7 @@ class DiscordBot(discord.Client):
         """adds the new guild channel to the db"""
         with Session() as session:
             try:
-                insert_channel(session, str(channel.id), str(channel.guild.id), channel.name)
+                insert_update_channel(session, str(channel.id), str(channel.guild.id), channel.name)
             except Exception as e:
                 Logger.error(f"Error inserting channel {channel.name}: {e}")
 
@@ -127,7 +126,7 @@ class DiscordBot(discord.Client):
         if before.name != after.name:
             with Session() as session:
                 try:
-                    update_channel(session, str(after.id), after.name)
+                    insert_update_channel(session, str(after.id), after.guild.id, after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of channel {before.name}: {e}")
 
