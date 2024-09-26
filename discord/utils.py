@@ -4,16 +4,16 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from discord_db.modules import Guild, Channel, Message, User
+from discord_db.modules import Guild, Channel, Message, members
 
 
-def insert_user(session, username: str, guild_id: str, joined_at: datetime) -> None:
+def insert_user(session, user_id: str, guild_id: str, joined_at: datetime) -> None:
     """insers a user to the db"""
-    stmt = select(User).where(User.username == username and User.guild_id == guild_id)
+    stmt = select(members).where(members.user_id == user_id and members.guild_id == guild_id)
     if session.scalars(stmt).first():
         return
 
-    user = User(username=username, guild_id=guild_id, joined_at=joined_at)
+    user = members(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
     session.add(user)
     session.commit()
 
@@ -48,7 +48,7 @@ def insert_update_channel(session, channel_id: str, guild_id: str, name: str) ->
 
 
 def insert_message(
-    session, message_id: str, channel_id: str, guild_id: str, username: str, created_at: datetime
+    session, message_id: str, channel_id: str, guild_id: str, user_id: str, created_at: datetime
 ) -> None:
     """inserts a message to the db"""
     stmt = select(Message).where(Message.message_id == message_id)
@@ -59,7 +59,7 @@ def insert_message(
         message_id=message_id,
         channel_id=channel_id,
         guild_id=guild_id,
-        username=username,
+        user_id=user_id,
         created_at=created_at,
     )
     session.add(message)

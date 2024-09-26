@@ -8,17 +8,17 @@ class Base(DeclarativeBase):
     """base class for the modules to inherit"""
 
 
-class User(Base):
-    """user table"""
+class members(Base):
+    """member table"""
 
-    __tablename__: str = "users"
+    __tablename__: str = "members"
 
-    username = mapped_column(String, primary_key=True)
+    user_id = mapped_column(String, primary_key=True)
     guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), primary_key=True)
     joined_at = mapped_column(DateTime, nullable=False)
 
     def __repr__(self) -> str:
-        return f"username: {self.username} guild_id: {self.guild_id} joined_at: {self.joined_at}"
+        return f"user_id: {self.user_id} guild_id: {self.guild_id} joined_at: {self.joined_at}"
 
 
 class Guild(Base):
@@ -56,7 +56,7 @@ class Message(Base):
         String, ForeignKey("channels.channel_id"), nullable=False
     )
     guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), nullable=False)
-    username = mapped_column(String, nullable=False)
+    user_id = mapped_column(String, nullable=False)
     created_at = mapped_column(DateTime, nullable=False)
 
     def __repr__(self) -> str:
@@ -64,6 +64,6 @@ class Message(Base):
         message_id: {self.message_id} \
         channel_id: {self.channel_id} \
         guild_id: {self.guild_id} \
-        username: {self.username} \
+        user_id: {self.user_id} \
         timestamp: {self.created_at}\
         "

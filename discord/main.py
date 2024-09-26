@@ -40,9 +40,9 @@ class DiscordBot(discord.Client):
 
                 for user in guild.members:
                     try:
-                        insert_user(session, user.name, guild_id, user.joined_at)
+                        insert_user(session, user.id, guild_id, user.joined_at)
                     except Exception as e:
-                        Logger.error(f"Error inserting user {user.name}: {e}")
+                        Logger.error(f"Error inserting user {user.id}: {e}")
 
                 for channel in guild.text_channels:
                     channel_id = str(channel.id)
