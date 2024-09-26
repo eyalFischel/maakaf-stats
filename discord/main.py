@@ -1,5 +1,6 @@
 """discord bot that tracks guild member activity and save it on db"""
 
+from datetime import timedelta
 import os
 
 import discord
@@ -56,19 +57,18 @@ class DiscordBot(discord.Client):
                         last_message_in_db = get_channel_latest_message(
                             session, channel_id
                         )
+                        last_message_time_in_db = None
                         if last_message_in_db:
-                            last_message_in_db = await channel.fetch_message(
-                                int(last_message_in_db.message_id)
-                            )
+                            last_message_time_in_db = last_message_in_db.created_at - timedelta(milliseconds=1)
                     except Exception as e:
                         Logger.error(
                             f"Error fetching latest message for channel {channel.name}: {e}"
                         )
-                        last_message_in_db = None
 
                     try:
+                        print(last_message_time_in_db)
                         async for message in channel.history(
-                            limit=None, after=last_message_in_db
+                            limit=None, after=last_message_time_in_db
                         ):
                             if message.author.bot:
                                 continue
