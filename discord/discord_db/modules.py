@@ -24,8 +24,8 @@ class Member(Base):
 
     __tablename__: str = "members"
 
-    user_id = mapped_column(String, ForeignKey("users.user_id"), primary_key=True)
-    guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), primary_key=True)
+    user_id = mapped_column(String, primary_key=True)
+    guild_id = mapped_column(String, primary_key=True)
     joined_at = mapped_column(DateTime, nullable=False)
 
     def __repr__(self) -> str:
