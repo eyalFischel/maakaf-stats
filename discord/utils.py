@@ -4,20 +4,40 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from discord_db.modules import Guild, Channel, Message, Member
+from discord_db.modules import Guild, Channel, Message, Member, User
 
 
-def insert_user(session, user_id: str, guild_id: str, joined_at: datetime) -> None:
+def insert_update_user(session, user_id: str, username: str) -> None:
+    """insert a user to the db"""
+    stmt = select(User).where(User.user_id == user_id)
+    user = session.scalars(stmt).first()
+    if user:
+        if user.username != username:
+            user.username = username
+            session.commit()
+        return
+    
+    user = User(user_id=user_id, username=username)
+    session.add(user)
+    session.commit()
+
+
+def insert_member(session, user_id: str, guild_id: str, joined_at: datetime, username: str) -> None:
     """insers a user to the db"""
     stmt = select(Member).where(Member.user_id == user_id and Member.guild_id == guild_id)
     if session.scalars(stmt).first():
         return
+    stmt = select(User).where(User.user_id == user_id)
+    if not session.scalars(stmt).first():
+        user = User(user_id=user_id, username=username)
+        session.add(user)
 
-    user = Member(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
-    session.add(user)
+    member = Member(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
+    session.add(member)
     session.commit()
 
-def insert_update_guild(session, guild_id: str, name: str):
+
+def insert_update_guild(session, guild_id: str, name: str) -> None:
     """inserts a guild to the db"""
     stmt = select(Guild).where(Guild.guild_id == guild_id)
     guild = session.scalars(stmt).first()

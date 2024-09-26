@@ -11,8 +11,9 @@ from utils import (
     insert_update_guild,
     insert_update_channel,
     insert_message,
-    insert_user,
+    insert_member,
     get_channel_latest_message,
+    insert_update_user
 )
 
 load_dotenv()
@@ -38,11 +39,11 @@ class DiscordBot(discord.Client):
                 except Exception as e:
                     Logger.error(f"Error inserting guild {guild.name}: {e}")
 
-                for user in guild.members:
+                for member in guild.members:
                     try:
-                        insert_user(session, user.id, guild_id, user.joined_at)
+                        insert_member(session, str(member.id), guild_id, member.joined_at, member.name)
                     except Exception as e:
-                        Logger.error(f"Error inserting user {user.id}: {e}")
+                        Logger.error(f"Error inserting user {member.id}: {e}")
 
                 for channel in guild.text_channels:
                     channel_id = str(channel.id)
@@ -77,7 +78,7 @@ class DiscordBot(discord.Client):
                                     str(message.id),
                                     channel_id,
                                     guild_id,
-                                    message.author.name,
+                                    str(message.author.id),
                                     message.created_at,
                                 )
                             except Exception as e:
@@ -102,7 +103,7 @@ class DiscordBot(discord.Client):
                     str(message.id),
                     str(message.channel.id),
                     str(message.guild.id),
-                    message.author.name,
+                    str(message.author.id),
                     message.created_at,
                 )
             except Exception as e:
@@ -122,9 +123,9 @@ class DiscordBot(discord.Client):
         """adds the new member to the db"""
         with Session() as session:
             try:
-                insert_user(session, member.name, str(member.guild.id), member.joined_at)
+                insert_member(session, str(member.id), str(member.guild.id), member.joined_at, member.name)
             except Exception as e:
-                Logger.error(f"Error inserting user {member.name} from guild {member.guild.id}: {e}")
+                Logger.error(f"Error inserting member {member.id} from guild {member.guild.id}: {e}")
     
     async def on_guild_join(self, guild) -> None:
         """adds the new joined guild to the db"""
@@ -139,7 +140,7 @@ class DiscordBot(discord.Client):
         if before.name != after.name:
             with Session() as session:
                 try:
-                    insert_update_channel(session, str(after.id), after.guild.id, after.name)
+                    insert_update_channel(session, str(after.id), str(after.guild.id), after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of channel {before.name}: {e}")
     
@@ -151,6 +152,14 @@ class DiscordBot(discord.Client):
                     insert_update_guild(session, str(after.id), after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of guild {before.name}: {e}")
+    
+    async def on_user_update(self, before, after) -> None:
+        if before.name != after.name:
+            with Session() as session:
+                try:
+                    insert_update_user(session, str(after.id), after.name)
+                except Exception as e:
+                    Logger.error(f"Error updating username of user {before.id}: {e}")
 
 
 if __name__ == "__main__":

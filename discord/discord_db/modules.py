@@ -8,12 +8,23 @@ class Base(DeclarativeBase):
     """base class for the modules to inherit"""
 
 
+class User(Base):
+    """user table"""
+
+    __tablename__: str = "users"
+
+    user_id = mapped_column(String, primary_key=True)
+    username = mapped_column(String, nullable=False)
+
+    def __repr__(self) -> str:
+        return f"user_id: {self.user_id} username: {self.username}"
+
 class Member(Base):
     """member table"""
 
     __tablename__: str = "members"
 
-    user_id = mapped_column(String, primary_key=True)
+    user_id = mapped_column(String, ForeignKey("users.user_id"), primary_key=True)
     guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), primary_key=True)
     joined_at = mapped_column(DateTime, nullable=False)
 
