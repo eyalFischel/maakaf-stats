@@ -8,7 +8,7 @@ class Base(DeclarativeBase):
     """base class for the modules to inherit"""
 
 
-class members(Base):
+class Member(Base):
     """member table"""
 
     __tablename__: str = "members"

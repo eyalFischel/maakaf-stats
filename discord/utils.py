@@ -4,16 +4,16 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from discord_db.modules import Guild, Channel, Message, members
+from discord_db.modules import Guild, Channel, Message, Member
 
 
 def insert_user(session, user_id: str, guild_id: str, joined_at: datetime) -> None:
     """insers a user to the db"""
-    stmt = select(members).where(members.user_id == user_id and members.guild_id == guild_id)
+    stmt = select(Member).where(Member.user_id == user_id and Member.guild_id == guild_id)
     if session.scalars(stmt).first():
         return
 
-    user = members(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
+    user = Member(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
     session.add(user)
     session.commit()
 
