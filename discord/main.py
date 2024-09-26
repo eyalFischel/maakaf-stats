@@ -90,6 +90,7 @@ class DiscordBot(discord.Client):
                         Logger.error(
                             f"Failed to fetch messages from channel {channel.name}: {e}"
                         )
+            session.commit()
 
     async def on_message(self, message: discord.message) -> None:
         """adds the message info to the db"""
@@ -110,6 +111,7 @@ class DiscordBot(discord.Client):
                 Logger.error(
                     f"Error inserting message {message.id} from channel {message.channel.id}: {e}"
                 )
+            session.commit()
 
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel) -> None:
         """adds the new guild channel to the db"""
@@ -118,6 +120,7 @@ class DiscordBot(discord.Client):
                 insert_update_channel(session, str(channel.id), str(channel.guild.id), channel.name)
             except Exception as e:
                 Logger.error(f"Error inserting channel {channel.name}: {e}")
+            session.commit()
 
     async def on_member_join(self, member: discord.member) -> None:
         """adds the new member to the db"""
@@ -126,14 +129,16 @@ class DiscordBot(discord.Client):
                 insert_member(session, str(member.id), str(member.guild.id), member.joined_at, member.name)
             except Exception as e:
                 Logger.error(f"Error inserting member {member.id} from guild {member.guild.id}: {e}")
+            session.commit()
     
     async def on_guild_join(self, guild) -> None:
         """adds the new joined guild to the db"""
-        with Session as session:
+        with Session() as session:
             try:
                 insert_update_guild(session, str(guild.id), guild.name)
             except:
                 Logger.error(f"Error inserting guild {guild.name}: {e}")
+            session.commit()
 
     async def on_guild_channel_update(self, before, after) -> None:
         """updates the channel changes in the db"""
@@ -143,6 +148,7 @@ class DiscordBot(discord.Client):
                     insert_update_channel(session, str(after.id), str(after.guild.id), after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of channel {before.name}: {e}")
+                session.commit()
     
     async def on_guild_update(self, before, after) -> None:
         """updates the guild changes in the db"""
@@ -152,6 +158,7 @@ class DiscordBot(discord.Client):
                     insert_update_guild(session, str(after.id), after.name)
                 except Exception as e:
                     Logger.error(f"Error updating name of guild {before.name}: {e}")
+                session.commit()
     
     async def on_user_update(self, before, after) -> None:
         if before.name != after.name:
@@ -160,6 +167,7 @@ class DiscordBot(discord.Client):
                     insert_update_user(session, str(after.id), after.name)
                 except Exception as e:
                     Logger.error(f"Error updating username of user {before.id}: {e}")
+                session.commit()
 
 
 if __name__ == "__main__":

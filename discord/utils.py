@@ -14,27 +14,21 @@ def insert_update_user(session, user_id: str, username: str) -> None:
     if user:
         if user.username != username:
             user.username = username
-            session.commit()
         return
     
     user = User(user_id=user_id, username=username)
     session.add(user)
-    session.commit()
 
 
 def insert_member(session, user_id: str, guild_id: str, joined_at: datetime, username: str) -> None:
     """insers a user to the db"""
+    insert_update_user(session, user_id, username)
     stmt = select(Member).where(Member.user_id == user_id and Member.guild_id == guild_id)
     if session.scalars(stmt).first():
         return
-    stmt = select(User).where(User.user_id == user_id)
-    if not session.scalars(stmt).first():
-        user = User(user_id=user_id, username=username)
-        session.add(user)
 
     member = Member(user_id=user_id, guild_id=guild_id, joined_at=joined_at)
     session.add(member)
-    session.commit()
 
 
 def insert_update_guild(session, guild_id: str, name: str) -> None:
@@ -44,12 +38,10 @@ def insert_update_guild(session, guild_id: str, name: str) -> None:
     if guild:
         if guild.name != name:
             guild.name = name
-            session.commit()
         return
     
     guild = Guild(guild_id=guild_id, name=name)
     session.add(guild)
-    session.commit()
 
 
 def insert_update_channel(session, channel_id: str, guild_id: str, name: str) -> None:
@@ -59,12 +51,10 @@ def insert_update_channel(session, channel_id: str, guild_id: str, name: str) ->
     if channel:
         if channel.name != name:
             channel.name = name
-            session.commit()
         return
 
     channel = Channel(channel_id=channel_id, guild_id=guild_id, name=name)
     session.add(channel)
-    session.commit()
 
 
 def insert_message(
@@ -83,7 +73,6 @@ def insert_message(
         created_at=created_at,
     )
     session.add(message)
-    session.commit()
 
 
 def get_channel_latest_message(session, channel_id: str) -> Message:
