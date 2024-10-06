@@ -76,5 +76,29 @@ class Message(Base):
         channel_id: {self.channel_id} \
         guild_id: {self.guild_id} \
         user_id: {self.user_id} \
-        timestamp: {self.created_at}\
+        created_at: {self.created_at}\
+        "
+
+class Reaction(Base):
+    """reaction table"""
+
+    __tablename__: str = "reactions"
+
+    emoji_id = mapped_column(String, primary_key=True)
+    message_id = mapped_column(String, primary_key=True)
+    user_id = mapped_column(String, primary_key=True)
+    channel_id = mapped_column(
+        String, ForeignKey("channels.channel_id"), nullable=False
+    )
+    guild_id = mapped_column(String, ForeignKey("guilds.guild_id"), nullable=False)
+    added_at = mapped_column(DateTime, nullable=True)
+
+    def __repr__(self) -> str:
+        return f"\
+        emoji_id: {self.emoji_id} \
+        message_id: {self.message_id} \
+        user_id: {self.user_id} \
+        channel_id: {self.channel_id} \
+        guild_id: {self.guild_id} \
+        added_at: {self.added_at}\
         "

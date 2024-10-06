@@ -4,7 +4,7 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from discord_db.modules import Guild, Channel, Message, Member, User
+from discord_db.modules import Guild, Channel, Message, Member, User, Reaction
 
 
 def insert_update_user(session, user_id: str, username: str) -> None:
@@ -84,3 +84,27 @@ def get_channel_latest_message(session, channel_id: str) -> Message:
     )
     last_message = session.scalars(stmt).first()
     return last_message
+
+
+def insert_reaction(
+    session, emoji_id: str, message_id: str, user_id: str, channel_id: str, guild_id: str, added_at: datetime
+) -> None:
+    """inserts a reaction to the db"""
+    stmt = (
+        select(Reaction)
+        .where(Reaction.emoji_id == emoji_id)
+        .where(Reaction.message_id == message_id)
+        .where(Reaction.user_id == user_id)
+    )
+    if session.scalars(stmt).first():
+        return
+
+    reaction = Reaction(
+        emoji_id=emoji_id,
+        message_id=message_id,
+        user_id=user_id,
+        channel_id=channel_id,
+        guild_id=guild_id,
+        added_at=added_at,
+    )
+    session.add(reaction)

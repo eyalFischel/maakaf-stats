@@ -1,6 +1,6 @@
 """discord bot that tracks guild member activity and save it on db"""
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 import os
 
 import discord
@@ -14,7 +14,8 @@ from utils import (
     insert_message,
     insert_member,
     get_channel_latest_message,
-    insert_update_user
+    insert_update_user,
+    insert_reaction
 )
 
 load_dotenv()
@@ -66,7 +67,6 @@ class DiscordBot(discord.Client):
                         )
 
                     try:
-                        print(last_message_time_in_db)
                         async for message in channel.history(
                             limit=None, after=last_message_time_in_db
                         ):
@@ -161,6 +161,7 @@ class DiscordBot(discord.Client):
                 session.commit()
     
     async def on_user_update(self, before, after) -> None:
+        """updates the user changes in the db"""
         if before.name != after.name:
             with Session() as session:
                 try:
@@ -168,6 +169,25 @@ class DiscordBot(discord.Client):
                 except Exception as e:
                     Logger.error(f"Error updating username of user {before.id}: {e}")
                 session.commit()
+
+    async def on_raw_reaction_add(self, payload) -> None:
+        """add the reaction to db"""
+        if payload.emoji.id:
+            emoji_id: str = str(payload.emoji.id)
+        else:
+            emoji_id: str = payload.emoji.name
+        message_id: str = str(payload.message_id)
+        user_id: str = str(payload.user_id)
+        channel_id: str = str(payload.channel_id)
+        guild_id: str = str(payload.guild_id)
+        added_at: datetime = datetime.now()
+
+        with Session() as session:
+            try:
+                insert_reaction(session, emoji_id, message_id, user_id, channel_id, guild_id, added_at)
+            except Exception as e:
+                Logger.error(f"Error inserting reaction of emoji {emoji_id} for message {message_id} from user {user_id}: {e}")
+            session.commit()
 
 
 if __name__ == "__main__":
