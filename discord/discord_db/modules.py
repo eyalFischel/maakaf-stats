@@ -19,6 +19,7 @@ class User(Base):
     def __repr__(self) -> str:
         return f"user_id: {self.user_id} username: {self.username}"
 
+
 class Member(Base):
     """member table"""
 
@@ -42,7 +43,7 @@ class Guild(Base):
 
     def __repr__(self) -> str:
         return f"guild_id: {self.guild_id} name: {self.name}"
-    
+
 
 class Channel(Base):
     """channel table"""
@@ -54,7 +55,9 @@ class Channel(Base):
     name = mapped_column(String, nullable=False)
 
     def __repr__(self) -> str:
-        return f"channel_id: {self.channel_id} guild_id: {self.guild_id} name: {self.name}"
+        return (
+            f"channel_id: {self.channel_id} guild_id: {self.guild_id} name: {self.name}"
+        )
 
 
 class Message(Base):
@@ -78,6 +81,7 @@ class Message(Base):
         user_id: {self.user_id} \
         created_at: {self.created_at}\
         "
+
 
 class Reaction(Base):
     """reaction table"""

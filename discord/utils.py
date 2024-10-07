@@ -15,15 +15,19 @@ def insert_update_user(session, user_id: str, username: str) -> None:
         if user.username != username:
             user.username = username
         return
-    
+
     user = User(user_id=user_id, username=username)
     session.add(user)
 
 
-def insert_member(session, user_id: str, guild_id: str, joined_at: datetime, username: str) -> None:
+def insert_member(
+    session, user_id: str, guild_id: str, joined_at: datetime, username: str
+) -> None:
     """insers a user to the db"""
     insert_update_user(session, user_id, username)
-    stmt = select(Member).where(Member.user_id == user_id and Member.guild_id == guild_id)
+    stmt = select(Member).where(
+        Member.user_id == user_id and Member.guild_id == guild_id
+    )
     if session.scalars(stmt).first():
         return
 
@@ -39,7 +43,7 @@ def insert_update_guild(session, guild_id: str, name: str) -> None:
         if guild.name != name:
             guild.name = name
         return
-    
+
     guild = Guild(guild_id=guild_id, name=name)
     session.add(guild)
 
@@ -58,7 +62,12 @@ def insert_update_channel(session, channel_id: str, guild_id: str, name: str) ->
 
 
 def insert_message(
-    session, message_id: str, channel_id: str, guild_id: str, user_id: str, created_at: datetime
+    session,
+    message_id: str,
+    channel_id: str,
+    guild_id: str,
+    user_id: str,
+    created_at: datetime,
 ) -> None:
     """inserts a message to the db"""
     stmt = select(Message).where(Message.message_id == message_id)
@@ -87,7 +96,13 @@ def get_channel_latest_message(session, channel_id: str) -> Message:
 
 
 def insert_reaction(
-    session, emoji_id: str, message_id: str, user_id: str, channel_id: str, guild_id: str, added_at: datetime
+    session,
+    emoji_id: str,
+    message_id: str,
+    user_id: str,
+    channel_id: str,
+    guild_id: str,
+    added_at: datetime,
 ) -> None:
     """inserts a reaction to the db"""
     stmt = (
