@@ -2,7 +2,7 @@ import logging
 
 from pythonjsonlogger import jsonlogger
 
-Logger = logging.getLogger("discord_bot")
+Logger = logging.getLogger("discord")
 Logger.setLevel(logging.DEBUG)
 
 file_handler = logging.FileHandler("discord_logs.jsonl")
